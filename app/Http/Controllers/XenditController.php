@@ -17,16 +17,12 @@ class XenditController extends Controller
 
     public function __construct()
     {
-        $this->apiKey = base64_encode('xnd_development_NvFnXSOaYCyYkxo9Dz4cXXE2rFFjOFLZCe9cfAw0tTxbgp5luPfswNvzPeIfSXGO:');
+        $this->apiKey = base64_encode('api_key');
     }
 
     public function createInvoice(Request $request)
     {
-//          Set Xendit API key
-
-
-            // Your logic to create a Virtual Account using Xendit API
-            // For example:
+//        
             $params = [
                 'external_id' =>  (string) Str::uuid(), // Replace with your unique external_id
     //            'bank_code' => $request->bank_code,      // The bank code for the Virtual Account (BNI, BCA, Mandiri, etc.)
@@ -40,7 +36,6 @@ class XenditController extends Controller
             'Authorization' => 'Basic ' . $this->apiKey
             ])->post('https://api.xendit.co/v2/invoices', $params);
 
-//            return response()->json($response->object());
 
            $payment = new payment();
            $payment->invoice_link = $response['invoice_url'];
@@ -53,7 +48,7 @@ class XenditController extends Controller
 
     public function webHook(Request $request){
         $id = $request->id;
-        Xendit::setApiKey('xnd_development_NvFnXSOaYCyYkxo9Dz4cXXE2rFFjOFLZCe9cfAw0tTxbgp5luPfswNvzPeIfSXGO');
+        Xendit::setApiKey('apikey');
         $response = \Xendit\Invoice::retrieve($id);
 
         $payment = payment::where('payment_id', $response['external_id'])->firstOrFail();
@@ -67,12 +62,11 @@ class XenditController extends Controller
 
         return response()->json(['data' => 'success']);
 
-//        if($response['status'] == )
     }
 
 
     public function createVirtualAccount(Request $request){
-        Xendit::setApiKey('xnd_development_NvFnXSOaYCyYkxo9Dz4cXXE2rFFjOFLZCe9cfAw0tTxbgp5luPfswNvzPeIfSXGO');
+        Xendit::setApiKey('api_key');
         $now = Carbon::now();
         $params = [
             'external_id' => (string) Str::uuid(),
@@ -105,7 +99,7 @@ class XenditController extends Controller
                 return 'ok';
             }else{
                 return response()->json([
-                    'data' => 'error bro i dont now what hapen this shit'
+                    'data' => 'error'
                 ]);
             }
     }
